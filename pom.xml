@@ -6,7 +6,7 @@
 	<groupId>com.nramiscal.loginReg</groupId>
 	<artifactId>loginReg</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>loginReg</name>
 	<description>Demo project for Spring Boot</description>

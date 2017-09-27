@@ -1,5 +1,6 @@
 package com.nramiscal.loginReg.services;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,14 +26,34 @@ public class PackageService {
 	}
 
 	public Package findPackageById(Long id) {
-		// TODO Auto-generated method stub
 		return pkgRepo.findOne(id);
 	}
 
 	public void activate(Package pkg) {
-		// TODO Auto-generated method stub
-		pkg.setAvailable(1);
+		pkg.setAvailability("available");
+		pkgRepo.save(pkg);
 	}
 	
+	public void deactivate(Package pkg) {
+		pkg.setAvailability("unavailable");
+		pkgRepo.save(pkg);
+	}
+
+	public void deletePackageById(Long id) {
+		pkgRepo.delete(id);	
+	}
+	
+	// get available packages only
+	public List<Package> findAvailablePackages() { 
+		List<Package> subPackages = (List<Package>) pkgRepo.findAll(); 
+		Iterator<Package> i = subPackages.iterator();
+		while (i.hasNext()) {
+		   Package p = i.next();
+		  if (!p.checkIfAvailable()) {
+		    i.remove();
+		  }
+		}
+		return subPackages;
+	}	
 
 }

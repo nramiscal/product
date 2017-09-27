@@ -19,11 +19,12 @@ span{
 <body>
     <h1>Welcome <c:out value="${currentUser.firstName}"></c:out>!</h1>
  
-   <h3>First Name: <span>${currentUser.firstName }</span></h3>
-    <h3>Last Name: <span>${currentUser.lastName }</span></h3>
-    <h3>Email: <span>${currentUser.username }</span></h3>
-    <h3>User Since: <span><fmt:formatDate pattern = "EEEEE, MMM d, yyyy" value = "${currentUser.created_at }" /> at <fmt:formatDate type = "time" timeStyle = "short" value = "${currentUser.created_at}" /></span></h3>
-    <h3>Last Sign In: <span><fmt:formatDate pattern = "EEEEE, MMM d, yyyy" value = "${currentUser.updated_at }" /> at <fmt:formatDate type = "time" timeStyle = "short" value = "${currentUser.updated_at}" /></span></h3>
+   <h3>Current Package: <span>${currentUser.getPackages().get(0).name }</span></h3>
+    <h3> Next Due Date: <span>${currentUser.getNextDueDate()}</span></h3>
+    <h3>Amount Due: $<span><fmt:formatNumber type="number" minFractionDigits="2" maxFractionDigits="2" value="${currentUser.getPackages().get(0).price }"></fmt:formatNumber></span></h3>
+    <%-- <h3>User Since: <span><fmt:formatDate pattern = "EEEEE, MMM d, yyyy" value = "${currentUser.created_at }" /> at <fmt:formatDate type = "time" timeStyle = "short" value = "${currentUser.created_at}" /></span></h3> --%>
+    <h3>User Since: <span><fmt:formatDate pattern = "MMMMM d, yyyy" value = "${currentUser.created_at }" /></span></h3>
+
     <br>
     <br>
 

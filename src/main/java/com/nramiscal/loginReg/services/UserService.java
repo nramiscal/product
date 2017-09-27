@@ -1,8 +1,13 @@
 package com.nramiscal.loginReg.services;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -83,5 +88,60 @@ public class UserService {
     			roleRepo.save(roles);
     		}
     }
+
+    // get users with subscriptions
+	public List<User> getCurrentSubscribers() {
+		List<User> subscribers = (List<User>) userRepo.findAll();
+		Iterator<User> i = subscribers.iterator();
+		while (i.hasNext()) {
+		   User u = i.next();
+		  if (u.getPackages().size() == 0) {
+		    i.remove();
+		  }
+		}
+		
+		return subscribers;
+	}
+	
+	public String getNextMonth() {
+	   	Calendar cal = GregorianCalendar.getInstance();
+	    	SimpleDateFormat df = new SimpleDateFormat("MMMM");
+	
+	    	Date currentMonth = new Date();
+	    	cal.setTime(currentMonth);
+	
+	    	// current month
+//	    	String currentMonthAsString = df.format(cal.getTime());
+	
+	    	// Add next month
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)+1);
+//	    	cal.add(Calendar.MONTH, 1);
+	   	String nextMonthAsString = df.format(cal.getTime());
+	   	
+	   	return nextMonthAsString;
+	}
+	
+	public String getCurrentYear() {
+	   	Calendar cal = GregorianCalendar.getInstance();
+
+	    	SimpleDateFormat year = new SimpleDateFormat("yyyy");
+	
+	    	Date currentMonth = new Date();
+	    	cal.setTime(currentMonth);
+	
+	    	String currentYear = year.format(cal.getTime());
+	   	return currentYear;
+	}
+	
+	public void updateUser(User user) {
+		System.out.println(user);
+		System.out.println(user.getPackages());
+		userRepo.save(user);		
+	}
+
+
+
+
+
        
 }

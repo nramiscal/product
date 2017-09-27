@@ -1,6 +1,9 @@
 package com.nramiscal.loginReg.models;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -37,6 +40,9 @@ public class User {
 	
 	@Email
 	private String username;
+	
+	@Column
+	private int startday;
 	
 	@Column
 	@Size(min=8)
@@ -78,6 +84,7 @@ public class User {
 		this.lastName = lastName;
 		this.username = username;
 		this.password = password;
+		this.startday = 1;
 	}
 
 	// created_at, updated_at
@@ -130,6 +137,10 @@ public class User {
 		return updated_at;
 	}
 	
+	public int getStartday() {
+		return startday;
+	}
+	
 	// setters
 
 	public void setId(Long id) {
@@ -167,7 +178,13 @@ public class User {
 	public void setUsername(String username) {
 		this.username = username;
 	}
+
+	public void setStartday(int startday) {
+		this.startday = startday;
+	}
 	
+	// custom methods
+
 	public boolean checkIfAdmin() {
 		List<Role> roles = this.getRoles();
 		for (int i = 0; i < roles.size(); i++) {
@@ -185,5 +202,41 @@ public class User {
 	public void setPackages(List<Package> packages) {
 		this.packages = packages;
 	}
+	
+	public String getNextMonth() {
+	   	Calendar cal = GregorianCalendar.getInstance();
+	    	SimpleDateFormat df = new SimpleDateFormat("MMMM");
+	
+	    	Date currentMonth = new Date();
+	    	cal.setTime(currentMonth);
+	
+	    	// current month
+//	    	String currentMonthAsString = df.format(cal.getTime());
+	
+	    	// Add next month
+		cal.set(Calendar.MONTH, cal.get(Calendar.MONTH)+1);
+//	    	cal.add(Calendar.MONTH, 1);
+	   	String nextMonthAsString = df.format(cal.getTime());
+	   	
+	   	return nextMonthAsString;
+	}
+	
+	public String getCurrentYear() {
+	   	Calendar cal = GregorianCalendar.getInstance();
+
+	    	SimpleDateFormat year = new SimpleDateFormat("yyyy");
+	
+	    	Date currentMonth = new Date();
+	    	cal.setTime(currentMonth);
+	
+	    	String currentYear = year.format(cal.getTime());
+	   	return currentYear;
+	}
+	
+	public String getNextDueDate() {
+		String date = this.getNextMonth() + " " + this.startday + ", " + this.getCurrentYear();
+		return date;
+	}
+
 }
 

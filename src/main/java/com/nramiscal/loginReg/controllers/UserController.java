@@ -1,6 +1,7 @@
 package com.nramiscal.loginReg.controllers;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -45,17 +46,21 @@ public class UserController {
 		userService.updateUserDate(user.getId(), user); // set updated_at
 		
 		model.addAttribute("currentUser", user);
-		model.addAttribute("users", userService.all());
-		model.addAttribute("packages", packageService.all());
-		
 		
 		// if admin, return adminPage
 		if (user.checkIfAdmin()) {
+			List<User> subscribers = (List<User>) userService.getCurrentSubscribers();
+			model.addAttribute("subscribers", subscribers);
+			model.addAttribute("users", userService.all()); // get all users
+			model.addAttribute("packages", packageService.all()); // get all packages
 			return "adminPage";
 		}
 		
 		if (user.getPackages().size() < 1) {
-			return "selectPackage";
+			List<Package> subPackages = packageService.findAvailablePackages();
+
+			model.addAttribute("subpackages", subPackages); // only available packages
+			return "subscribe";
 		}
 	
 		return "dashboard";	
@@ -125,16 +130,8 @@ public class UserController {
 		userService.updateWithUserRole(user);
 		return "redirect:/home";
 	}
-	
-//	@PostMapping("/packages/new")
-//	public String createProduct(@Valid @ModelAttribute("package") Package pkg, BindingResult result, @RequestParam(value="error", required=false) String error, @RequestParam(value="logout", required=false) String logout) {
-//		if (result.hasErrors()) {
-//			return "adminPage";
-//		}else {
-//			packageService.addPackage(pkg);
-//			return "redirect:/";
-//		}
-//	}
+
+	// new routes
 	
 	@RequestMapping("/packages/new")
 	public String newPackage(@Valid @ModelAttribute("pkg") Package pkg) {
@@ -157,5 +154,38 @@ public class UserController {
 		packageService.activate(pkg);
 		return "redirect:/home";
 	}
+	
+	@RequestMapping("/deactivate/{id}")
+	public String deactivate(@PathVariable("id") Long id) {
+		Package pkg = packageService.findPackageById(id);
+		packageService.deactivate(pkg);
+		return "redirect:/home";
+	}
+	
+	@RequestMapping("/delete_package/{id}")
+	public String deletePackage(@PathVariable("id") Long id) {
+		packageService.deletePackageById(id);
+		return "redirect:/home";
+	}
+	
+	@PostMapping("/subscribe")
+	public String subscribe(@RequestParam(value="logout", required=false) String logout, @RequestParam("startday") int startday, @RequestParam("pkg_id") Long pkg_id, @RequestParam("currentUser_id") Long currentUser_id) {
+		
+			
+			User user = userService.findUserById(currentUser_id);
+			user.setStartday((int) startday);
+
+			Package subscription = packageService.findPackageById(pkg_id);
+			ArrayList<Package> packages = new ArrayList<Package>();
+			packages.add(subscription);
+			user.setPackages(packages);
+			
+			userService.updateUser(user);
+			return "redirect:/";
+		}
+	
+
+		
+	
 	
 }

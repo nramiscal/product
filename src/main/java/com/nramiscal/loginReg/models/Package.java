@@ -11,7 +11,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
@@ -32,12 +31,7 @@ public class Package {
 	private float price;
 	
 	@Column
-	private int available = 0;
-	
-	@Column
-	@Min(1)
-	@Max(31)
-	private int startday = 1;
+	private String availability;
 	
 	@Column
 	private Date created_at;
@@ -51,13 +45,19 @@ public class Package {
 	// constructors
 	
 	public Package() {
-		
+		super();
+		this.name = "Default name";
+		this.price = 0;
+		this.availability = "unavailable";
+//		this.startday = 1;
 	}
 	
 	public Package(String name, float price) {
 		super();
 		this.name = name;
 		this.price = price;
+		this.availability = "unavailable";
+//		this.startday = 1;
 	}
 	
 	// getters and setters
@@ -74,12 +74,8 @@ public class Package {
 		return price;
 	}
 
-	public int available() {
-		return available;
-	}
-
-	public int getStartDay() {
-		return startday;
+	public String getAvailability() {
+		return availability;
 	}
 
 	public Date getCreated_at() {
@@ -106,12 +102,8 @@ public class Package {
 		this.price = price;
 	}
 
-	public void setAvailable(int available) {
-		this.available = available;
-	}
-
-	public void setStartDay(int startday) {
-		this.startday = startday;
+	public void setAvailability(String availability) {
+		this.availability = availability;
 	}
 
 	public void setCreated_at(Date created_at) {
@@ -135,6 +127,18 @@ public class Package {
 	@PreUpdate
 	protected void onUpdate(){
 	this.updated_at = new Date();
+	}
+	
+	public boolean checkIfAvailable() {
+		if (this.getAvailability().equals("available")) {
+			return true;
+		} 
+		else if (this.getAvailability().equals("unavailable")) {
+			return false;
+		}
+		else {
+			return false;
+		}
 	}
 	
 
